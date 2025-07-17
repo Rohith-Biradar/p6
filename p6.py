@@ -1,16 +1,25 @@
-from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.datasets import load_iris
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score,confusion_matrix,classification_report
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import numpy as np
+
 
 dataset=load_iris()
 
-x_train,x_test,y_train,y_test=train_test_split(dataset.data,dataset.target,test_size=0.25,random_state=42)
+X_train,X_test,y_train,y_test=train_test_split(dataset.data,dataset.target,test_size=0.2,random_state=30)
 
-model=RandomForestClassifier(n_estimators=100,random_state=42)
-model.fit(x_train,y_train)
-y_pred=model.predict(x_test)
+print("Training Labels: ",y_train)
+model=KNeighborsClassifier(n_neighbors=3)
+model.fit(X_train,y_train)
 
-print("accuracy score",accuracy_score(y_test,y_pred))
-print("confusion matrix",confusion_matrix(y_test,y_pred))
-print("classification rport",classification_report(y_test,y_pred))
+for i in range(len(X_test)):
+    x=X_test[i]
+    x_new=np.array([x])
+    y_pred=model.predict(x_new)
+
+    print(f"Target: {dataset.target_names[y_test[i]]}, Predicted: {dataset.target_names[y_pred]}")
+
+
+accuracy=model.score(X_test,y_test)
+print("Accuracy Score: ",accuracy)
